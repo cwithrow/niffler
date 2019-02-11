@@ -47,24 +47,8 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
-# Translations
-*.mo
-*.pot
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
 
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
 
 # PyCharm
 .idea
@@ -78,11 +62,7 @@ docs/_build/
 # pyenv
 .python-version
 
-# celery beat schedule file
-celerybeat-schedule
 
-# SageMath parsed files
-*.sage.py
 
 # Environments
 .env
@@ -93,7 +73,8 @@ ENV/
 env.bak/
 venv.bak/
 
-
+# Anaconda env
+bin/
 
 # mkdocs documentation
 /site
@@ -103,3 +84,4 @@ venv.bak/
 
 # config
 config.py
+
