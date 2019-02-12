@@ -41,7 +41,7 @@ class FBData():
 
 def main():
     date1 = '02/01/2019'
-    date2 = '02/11/2019'
+    date2 = '02/03/2019'
 
     # initialize logger
     logging.basicConfig(level=logging.DEBUG,filename='app.log', filemode='w',
@@ -58,7 +58,7 @@ def main():
         data = fbd.get_data( graph, date1, date2)
 
     # export to json/csv
-        with open(os.path.join(config.output_path,'posts '+ date2.replace('/','_') +'.json'), 'w') as f:
+        with open(os.path.join(config.output_path,'posts_'+ date2.replace('/','_') +'.json'), 'w') as f:
             json.dump(data, f)
 #-------------------------------------#
 
