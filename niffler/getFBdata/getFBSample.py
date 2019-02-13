@@ -1,3 +1,4 @@
+# getFBSample.py
 # Python 3.5, MacOS 10.14.2
 
 import facebook
@@ -8,9 +9,9 @@ import os
 import time
 
 
-class FBData():
+class FBSample():
 
-    def get_comments(self,obj_id, graph_obj, delay):
+    def get_comments(self,obj_id, graph_obj, limit, delay):
         # to prevent rate limit problems
         time.sleep(delay)
         try:
@@ -19,30 +20,34 @@ class FBData():
             logging.error("Graph API comments error", exc_info=True)
 
         if 'comments' in comments.keys():
-            for c in comments['comments']['data']:
+            comments = comments['comments']['data']
+            for c in comments:
                 try:
                     time.sleep(delay)
-                    c['replies'] = graph_obj.request(c['id'] + '/?fields=comments')
+                    replies= graph_obj.request(c['id'] + '/?fields=comments.limit('+ limit + ')')
+                    if 'comments' in replies.keys():
+                        c['replies'] = replies['comments']['data']
+
                 except facebook.GraphAPIError():
                     logging.error("Graph API replies error", exc_info=True)
 
         # print(comments)
         return comments
 
-    def get_data(self,graph_obj,beg_date, end_date,delay=18):
+    def get_data(self,graph_obj,beg_date, end_date,limit, delay=18):
         try:
-            posts = graph_obj.request(config.group_id+'/?fields=feed.since('+beg_date+').until(' + end_date +')')
+            posts = graph_obj.request(config.group_id+'/?fields=feed.since('+beg_date+').until(' + end_date +').limit('+limit+')')
         except facebook.GraphAPIError:
             logging.error("facebook.GraphAPIError feed error", exc_info=True)
         else:
             for p in posts['feed']['data']:
-                p['comments'] = self.get_comments(p['id'], graph_obj, delay)
+                p['comments'] = self.get_comments(p['id'], graph_obj, limit, delay)
             return posts
 
 def main():
-    date1 = '02/01/2019'
-    date2 = '02/03/2019'
-
+    date1 = '2019-02-01'
+    date2 = '2019-02-03'
+    lim = '100'
     # initialize logger
     logging.basicConfig(level=logging.DEBUG,filename='app.log', filemode='w',
                         format='%(name)s - %(levelname)s - %(message)s')
@@ -54,12 +59,13 @@ def main():
     except facebook.GraphAPIError:
         logging.error("facebook.GraphAPIError connection error", exc_info=True)
     else:
-        fbd = FBData()
-        data = fbd.get_data( graph, date1, date2)
+        fbd = FBSample()
+        data = fbd.get_data( graph, date1, date2, lim)
 
     # export to json/csv
-        with open(os.path.join(config.output_path,'posts_'+ date2.replace('/','_') +'.json'), 'w') as f:
-            json.dump(data, f)
+        with open(os.path.join(config.output_path,'full_'+ date2.replace('/','_') +'.json'), 'w') as f:
+            json.dump(data['feed']['data'], f)
+
 #-------------------------------------#
 
 if __name__ == '__main__':
