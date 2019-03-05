@@ -8,7 +8,7 @@ __pycache__/
 
 
 #output
-~/code/niffler/niffler/output/
+niffler/output/
 
 # Distribution / packaging
 .Python
