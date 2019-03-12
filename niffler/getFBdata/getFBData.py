@@ -11,18 +11,20 @@ import time
 import argparse
 
 class FBData():
-    # def createFolder(self, dir):
-    #     print(dir)
-    #     new_path = os.path.join(config.output_path, '/' + dir)
-    #     try:
-    #         if not os.path.exists(new_path):
-    #             os.makedirs(new_path)
-    #     except OSError:
-    #         print('Error: Creating directory. ' + new_path)
+    def createFolder(self, dir):
+
+        new_path = os.path.join(config.output_path, dir)
+        print(new_path)
+
+        try:
+            if not os.path.exists(new_path):
+                os.makedirs(new_path)
+        except OSError:
+            print('Error creating directory: ' + new_path)
 
     def get_posts(self,graph_obj,beg_date, end_date,limit):
-        print(config.output_path)
-        print(os.path.join(config.output_path,end_date.replace('-', '_')))
+        # print(config.output_path)
+        # print(os.path.join(config.output_path,end_date.replace('-', '_')))
         try:
             posts = graph_obj.request(config.group_id+'/?fields=feed.since('+beg_date+').until(' + end_date +')'
                                                 '.limit('+limit+')')['feed']['data']
@@ -37,7 +39,7 @@ class FBData():
                     p['post'] = p['message']
                     p.pop('message', None)
 
-            # self.createFolder(end_date.replace('-', '_'))
+            self.createFolder(end_date.replace('-', '_'))
 
             with open(os.path.join(config.output_path, end_date.replace('-', '_') + '/' +'posts' +
                     end_date.replace('-', '_') + '.json'), 'w') as f:
@@ -132,7 +134,6 @@ class FBData():
         """
         Get the command line argument parser.
         """
-
         parser = argparse.ArgumentParser("FBData")
         parser.add_argument("--post_type",default='a', help="Type of post to get: 'a' for all, 'p' for posts, "
                                                              "'c' for comments, 'r' for replies")
